@@ -1,26 +1,16 @@
 " Commands {{{1
 
-com! -buffer -nargs=1   -complete=custom,graph#cmd_complete  GraphCompile  call graph#compile(<q-args>)
-com! -buffer -nargs=0  GraphInteractive  call graph#interactive()
-com! -buffer -nargs=0  GraphShow         call graph#show()
+com! -buffer -nargs=+   -complete=custom,graph#cmd_complete  Graph  call graph#cmd(<q-args>)
 
-cnorea  <buffer><expr>  graphcompile  getcmdtype() ==# ':' && getcmdline() ==# 'graphcompile'
-\                                     ?    'GraphCompile'
-\                                     :    'graphcompile'
-
-cnorea  <buffer><expr>  graphinteractive  getcmdtype() ==# ':' && getcmdline() ==# 'graphinteractive'
-\                                         ?    'GraphInteractive'
-\                                         :    'graphinteractive'
-
-cnorea  <buffer><expr>  graphshow  getcmdtype() ==# ':' && getcmdline() ==# 'graphshow'
-\                                  ?    'GraphShow'
-\                                  :    'graphshow'
+cnorea  <buffer><expr>  graph  getcmdtype() ==# ':' && getcmdline() ==# 'graph'
+\                              ?    'Graph'
+\                              :    'graph'
 
 " Mappings {{{1
 
-nno  <buffer><nowait><silent>  <bslash>c  :<c-u>GraphCompile<cr>
-nno  <buffer><nowait><silent>  <bslash>s  :<c-u>GraphShow<cr>
-nno  <buffer><nowait><silent>  <bslash>i  :<c-u>GraphInteractive<cr>
+nno  <buffer><nowait><silent>  <bslash>c  :<c-u>Graph -compile<cr>
+nno  <buffer><nowait><silent>  <bslash>s  :<c-u>Graph -show<cr>
+nno  <buffer><nowait><silent>  <bslash>i  :<c-u>Graph -interactive<cr>
 
 " Options {{{1
 
@@ -46,11 +36,7 @@ let b:undo_ftplugin =         get(b:, 'undo_ftplugin', '')
 \                        | exe 'nunmap <buffer> <bslash>c'
 \                        | exe 'nunmap <buffer> <bslash>i'
 \                        | exe 'nunmap <buffer> <bslash>s'
-\                        | exe 'cuna   <buffer> graphcompile'
-\                        | exe 'cuna   <buffer> graphinteractive'
-\                        | exe 'cuna   <buffer> graphshow'
-\                        | delc GraphCompile
-\                        | delc GraphInteractive
-\                        | delc GraphShow
+\                        | exe 'cuna   <buffer> graph'
+\                        | delc Graph
 \                      "
 

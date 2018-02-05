@@ -206,28 +206,30 @@ let s:boolean = [
 \    {'word': 'false'},
 \ ]
 
-fu! graph#compile(tool) abort "{{{1
-" Compilation
-" If argument given, use it as output
-    if !executable(a:tool)
-        echoerr 'The '.string(a:tool).' executable was not found.'
-        return
+fu! graph#cmd(action, ...) abort "{{{1
+    if a:action =~# '-compile'
+        call s:compile(a:0 ? a:1 : 'dot')
+    else
+        let funcname = matchstr(a:action, '-\zs\S\+')
+        if empty(funcname) || !exists('*s:'.funcname)
+            return
+        else
+            call s:{funcname}()
+        endif
     endif
-
-    let s:logfile = s:graph_log_file()
-    exe printf('!(%s -Tpdf %s -o %s 2>&1) | tee %s',
-    \          a:tool,
-    \          shellescape(expand('%:p'), 1),
-    \          shellescape(s:graph_output_file('pdf'), 1),
-    \          shellescape(s:logfile, 1)
-    \)
-
-    exe 'cfile '.escape(s:logfile, ' \"!?''')
-    call delete(s:logfile)
 endfu
 
-fu! graph#cmd_complete(_a,_l,_p) abort "{{{1
-    return join(['circo', 'dot2text', 'fdp', 'neato', 'sfdp', 'twopi'], "\n")
+fu! graph#cmd_complete(arglead, cmdline, _p) abort "{{{1
+    let options = [
+    \               '-compile ',
+    \               '-interactive ',
+    \               '-show ',
+    \             ]
+    if a:arglead[0] ==# '-' || empty(a:arglead) && a:cmdline !~# '-compile\s\+\w*$'
+        return join(options, "\n")
+    else
+        return join(['circo', 'dot2text', 'fdp', 'neato', 'sfdp', 'twopi'], "\n")
+    endif
 endfu
 
 fu! graph#omni_complete(findstart, base) abort "{{{1
@@ -339,6 +341,24 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
     endif
 endfu
 
+fu! s:compile(cmd) abort "{{{1
+    if !executable(a:cmd)
+        echoerr 'The '.string(a:cmd).' executable was not found.'
+        return
+    endif
+
+    let s:logfile = s:graph_log_file()
+    exe printf('!(%s -Tpdf %s -o %s 2>&1) | tee %s',
+    \          a:cmd,
+    \          shellescape(expand('%:p'), 1),
+    \          shellescape(s:graph_output_file('pdf'), 1),
+    \          shellescape(s:logfile, 1)
+    \)
+
+    exe 'cfile '.escape(s:logfile, ' \"!?''')
+    call delete(s:logfile)
+endfu
+
 fu! s:graph_log_file() abort "{{{1
     return tempname().'.log'
 endfu
@@ -347,7 +367,7 @@ fu! s:graph_output_file(output) abort "{{{1
     return expand('%:p:r').'.'.a:output
 endfu
 
-fu! graph#interactive() abort "{{{1
+fu! s:interactive() abort "{{{1
 " Interactive viewing. "dot -Txlib <file.gv>" uses inotify to immediately
 " redraw image when the input file is changed.
     if !executable('dot')
@@ -358,7 +378,7 @@ fu! graph#interactive() abort "{{{1
     call system('dot -Txlib '.shellescape(expand('%:p')))
 endfu
 
-fu! graph#show() abort "{{{1
+fu! s:show() abort "{{{1
     if !filereadable(s:graph_output_file('pdf'))
         call s:graph_compile('dot')
     endif
