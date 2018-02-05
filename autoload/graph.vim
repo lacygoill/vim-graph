@@ -348,14 +348,17 @@ fu! s:compile(cmd) abort "{{{1
     endif
 
     let s:logfile = s:graph_log_file()
-    exe printf('!(%s -Tpdf %s -o %s 2>&1) | tee %s',
+    sil exe printf('!(%s -Tpdf %s -o %s 2>&1) | tee %s',
     \          a:cmd,
     \          shellescape(expand('%:p'), 1),
     \          shellescape(s:graph_output_file('pdf'), 1),
     \          shellescape(s:logfile, 1)
     \)
+    redraw!
 
-    exe 'cfile '.escape(s:logfile, ' \"!?''')
+    if getfsize(s:logfile)
+        exe 'cfile '.escape(s:logfile, ' \"!?''')
+    endif
     call delete(s:logfile)
 endfu
 
@@ -368,14 +371,16 @@ fu! s:graph_output_file(output) abort "{{{1
 endfu
 
 fu! s:interactive() abort "{{{1
-" Interactive viewing. "dot -Txlib <file.gv>" uses inotify to immediately
-" redraw image when the input file is changed.
+    " Interactive viewing.  "dot -Txlib  <file.gv>" uses inotify  to immediately
+    " redraw image when the input file is changed.
+
     if !executable('dot')
         echoerr 'The '.string('dot').' executable was not found.'
         return
     endif
 
-    call system('dot -Txlib '.shellescape(expand('%:p')))
+    sil exe '!dot -Txlib '.shellescape(expand('%:p')).' &'
+    redraw!
 endfu
 
 fu! s:show() abort "{{{1
