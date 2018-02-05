@@ -347,14 +347,14 @@ fu! s:compile(cmd) abort "{{{1
         return
     endif
 
-    let s:logfile = s:graph_log_file()
-    sil exe printf('!(%s -Tpdf %s -o %s 2>&1) | tee %s',
+    let s:logfile = s:log_file()
+    call system(printf('(%s -Tpdf %s -o %s 2>&1) | tee %s',
     \          a:cmd,
-    \          shellescape(expand('%:p'), 1),
-    \          shellescape(s:graph_output_file('pdf'), 1),
-    \          shellescape(s:logfile, 1)
-    \)
-    redraw!
+    \          shellescape(expand('%:p')),
+    \          shellescape(s:output_file('pdf')),
+    \          shellescape(s:logfile)
+    \))
+    " redraw!
 
     if getfsize(s:logfile)
         exe 'cfile '.escape(s:logfile, ' \"!?''')
@@ -362,11 +362,11 @@ fu! s:compile(cmd) abort "{{{1
     call delete(s:logfile)
 endfu
 
-fu! s:graph_log_file() abort "{{{1
+fu! s:log_file() abort "{{{1
     return tempname().'.log'
 endfu
 
-fu! s:graph_output_file(output) abort "{{{1
+fu! s:output_file(output) abort "{{{1
     return expand('%:p:r').'.'.a:output
 endfu
 
@@ -379,18 +379,18 @@ fu! s:interactive() abort "{{{1
         return
     endif
 
-    sil exe '!dot -Txlib '.shellescape(expand('%:p')).' &'
+    sil exe '!dot -Txlib '.shellescape(expand('%:p'),1).' &'
     redraw!
 endfu
 
 fu! s:show() abort "{{{1
-    if !filereadable(s:graph_output_file('pdf'))
-        call s:graph_compile('dot')
+    if !filereadable(s:output_file('pdf'))
+        call s:compile('dot')
     endif
 
     if !executable('xdg-open')
         echoerr 'Viewer program not found:  xdg-open'
         return
     endif
-    call system('xdg-open '.shellescape(s:graph_output_file('pdf')))
+    call system('xdg-open '.shellescape(s:output_file('pdf')))
 endfu
