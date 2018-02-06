@@ -9,6 +9,17 @@ let g:autoloaded_graph = 1
 
 " Variables {{{1
 
+" This is  the variable you need  to change, if you  want to view your  graph in
+" another format.
+let s:FORMAT = 'pdf'
+
+let s:VIEWERS = {
+\    'pdf': 'zathura',
+\    'png': 'feh',
+\ }
+
+let s:VIEWER = get(s:VIEWERS, s:FORMAT, 'xdg-open')
+
 let s:completion_type = ''
 
 " arrowhead {{{2
@@ -1106,10 +1117,10 @@ fu! s:compile(cmd) abort "{{{1
     endif
 
     let s:logfile = s:log_file()
-    call system(printf('(%s -Tpdf %s -o %s 2>&1) | tee %s',
+    call system(printf('(%s -T'.s:FORMAT.' %s -o %s 2>&1) | tee %s',
     \          a:cmd,
     \          shellescape(expand('%:p')),
-    \          shellescape(s:output_file('pdf')),
+    \          shellescape(s:output_file()),
     \          shellescape(s:logfile)
     \))
 
@@ -1136,19 +1147,19 @@ fu! s:log_file() abort "{{{1
     return tempname().'.log'
 endfu
 
-fu! s:output_file(output) abort "{{{1
-    return expand('%:p:r').'.'.a:output
+fu! s:output_file() abort "{{{1
+    return expand('%:p:r').'.'.s:FORMAT
 endfu
 
 fu! s:show() abort "{{{1
     " call s:compile('dot')
-    " if !filereadable(s:output_file('pdf'))
+    " if !filereadable(s:output_file())
         call s:compile('dot')
     " endif
 
-    if !executable('zathura')
-        echoerr 'Viewer program not found:  zathura'
+    if !executable(s:VIEWER)
+        echoerr 'Viewer program not found:  's:VIEWER
         return
     endif
-    call system('zathura '.shellescape(s:output_file('pdf')))
+    call system(s:VIEWER.' '.shellescape(s:output_file()))
 endfu
