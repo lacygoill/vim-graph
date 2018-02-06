@@ -7,6 +7,9 @@ let g:autoloaded_graph = 1
 " There are 2 new kinds of attributes (S and C).
 " We don't take them into account in the omni completion function.
 
+" TODO:
+" Visual mapping to compile only the selected code.
+
 " Variables {{{1
 
 " This is  the variable you need  to change, if you  want to view your  graph in
@@ -975,15 +978,23 @@ let s:style = [
 \    {'word': 'solid',     'menu': '[E,N]'},
 \ ]
 
-fu! graph#cmd(action, ...) abort "{{{1
+fu! graph#cmd(action, line1, line2) abort "{{{1
+    sil update
+    let cmd = matchstr(a:action, '-compile\s*\zs\S\+')
+    if empty(cmd)
+        let cmd = 'dot'
+    endif
+
     if a:action =~# '-compile'
-        call s:compile(a:0 ? a:1 : 'dot')
+        call s:compile(cmd, a:line1, a:line2)
     else
         let funcname = matchstr(a:action, '-\zs\S\+')
         if empty(funcname) || !exists('*s:'.funcname)
             return
-        else
-            call s:{funcname}()
+        elseif funcname ==# 'show'
+            call s:show(cmd, a:line1, a:line2)
+        elseif funcname ==# 'interactive'
+            call s:interactive()
         endif
     endif
 endfu
@@ -994,10 +1005,10 @@ fu! graph#cmd_complete(arglead, cmdline, _p) abort "{{{1
     \               '-interactive ',
     \               '-show ',
     \             ]
-    if a:arglead[0] ==# '-' || empty(a:arglead) && a:cmdline !~# '-compile\s\+\w*$'
+    if a:arglead[0] ==# '-' || empty(a:arglead) && a:cmdline !~# '\%(-compile\|-show\)\s\+\w*$'
         return join(options, "\n")
     else
-        return join(['circo', 'dot2text', 'fdp', 'neato', 'sfdp', 'twopi'], "\n")
+        return join(['circo', 'dot', 'dot2text', 'fdp', 'neato', 'sfdp', 'twopi'], "\n")
     endif
 endfu
 
@@ -1110,52 +1121,69 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
     endif
 endfu
 
-fu! s:compile(cmd) abort "{{{1
+fu! s:compile(cmd, line1, line2) abort "{{{1
     if !executable(a:cmd)
-        echoerr 'The '.string(a:cmd).' executable was not found.'
-        return
+            try
+            throw 'E8010:  [graph]  filter not available: '.a:cmd
+        catch
+            call lg#catch_error()
+        endtry
     endif
 
-    let s:logfile = s:log_file()
+    let file = expand('%:p')
+    if [a:line1, a:line2] != [1, line('$')]
+        let lines = getline(a:line1, a:line2)
+        let file = tempname()
+        call writefile(lines, file)
+    endif
+
+    let logfile = tempname().'.log'
     call system(printf('(%s -T'.s:FORMAT.' %s -o %s 2>&1) | tee %s',
     \          a:cmd,
-    \          shellescape(expand('%:p')),
+    \          shellescape(file),
     \          shellescape(s:output_file()),
-    \          shellescape(s:logfile)
-    \))
+    \          shellescape(logfile)
+    \ ))
 
-    if getfsize(s:logfile)
-        exe 'cfile '.escape(s:logfile, ' \"!?''')
+    if getfsize(logfile)
+        exe 'cfile '.escape(logfile, ' \"!?''')
     endif
-    call delete(s:logfile)
+    call delete(logfile)
+    return 1
 endfu
 
 fu! s:interactive() abort "{{{1
+    " FIXME:
+    " Would it be possible to support other commands (neato, twopi, …)?
+
     " Interactive viewing.  "dot -Txlib  <file.gv>" uses inotify  to immediately
     " redraw image when the input file is changed.
 
     if !executable('dot')
-        echoerr 'The '.string('dot').' executable was not found.'
-        return
+        try
+            throw 'E8010:  [graph]  filter not available: dot'
+        catch
+            call lg#catch_error()
+            return
+        endtry
     endif
 
     sil exe '!dot -Txlib '.shellescape(expand('%:p'),1).' &'
     redraw!
 endfu
 
-fu! s:log_file() abort "{{{1
-    return tempname().'.log'
-endfu
-
 fu! s:output_file() abort "{{{1
     return expand('%:p:r').'.'.s:FORMAT
 endfu
 
-fu! s:show() abort "{{{1
-    " call s:compile('dot')
+fu! s:show(cmd,line1,line2) abort "{{{1
     " if !filereadable(s:output_file())
-        call s:compile('dot')
+    "     call s:compile('dot')
     " endif
+
+    if s:compile(a:cmd, a:line1, a:line2) ==# 'fail'
+        return
+    endif
 
     if !executable(s:VIEWER)
         echoerr 'Viewer program not found:  's:VIEWER
