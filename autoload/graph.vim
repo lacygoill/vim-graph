@@ -7,9 +7,6 @@ let g:autoloaded_graph = 1
 " There are 2 new kinds of attributes (S and C).
 " We don't take them into account in the omni completion function.
 
-" TODO:
-" Visual mapping to compile only the selected code.
-
 " Variables {{{1
 
 " This is  the variable you need  to change, if you  want to view your  graph in
@@ -1189,5 +1186,5 @@ fu! s:show(cmd,line1,line2) abort "{{{1
         echoerr 'Viewer program not found:  's:VIEWER
         return
     endif
-    call system(s:VIEWER.' '.shellescape(s:output_file()))
+    call system(s:VIEWER.' '.shellescape(s:output_file()).' &')
 endfu
