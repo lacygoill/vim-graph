@@ -1094,7 +1094,7 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
     else
 
         if s:completion_type =~# '^attr'
-            return filter(copy(s:attrs), {i,v ->     stridx(v.word, a:base) == 0
+            return filter(copy(s:attrs), {i,v ->     stridx(v.word, a:base) ==# 0
             \                                     && v.menu =~ '\[.*'.toupper(s:completion_type[4]).'.*\]' })
         elseif index([
             \          'arrowhead',
@@ -1108,11 +1108,11 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             \          'rankdir',
             \          'shape',
             \          'style',
-            \], s:completion_type) == -1
+            \], s:completion_type) ==# -1
             return []
         endif
 
-        return filter(copy(s:{s:completion_type}), {i,v -> stridx(v.word, a:base) == 0 })
+        return filter(copy(s:{s:completion_type}), {i,v -> stridx(v.word, a:base) ==# 0 })
     endif
 endfu
 
