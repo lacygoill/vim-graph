@@ -1126,7 +1126,7 @@ fu! s:compile(cmd, line1, line2) abort "{{{1
     endif
 
     let file = expand('%:p')
-    if [a:line1, a:line2] != [1, line('$')]
+    if [a:line1, a:line2] !=# [1, line('$')]
         let lines = getline(a:line1, a:line2)
         let file = tempname()
         call writefile(lines, file)
