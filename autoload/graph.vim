@@ -988,9 +988,9 @@ fu! graph#cmd(action, line1, line2) abort "{{{1
         let funcname = matchstr(a:action, '-\zs\S\+')
         if empty(funcname) || !exists('*s:'.funcname)
             return
-        elseif funcname ==# 'show'
+        elseif funcname is# 'show'
             call s:show(cmd, a:line1, a:line2)
-        elseif funcname ==# 'interactive'
+        elseif funcname is# 'interactive'
             call s:interactive()
         endif
     endif
@@ -1002,7 +1002,7 @@ fu! graph#cmd_complete(arglead, cmdline, _p) abort "{{{1
     \               '-interactive ',
     \               '-show ',
     \             ]
-    if a:arglead[0] ==# '-' || empty(a:arglead) && a:cmdline !~# '\%(-compile\|-show\)\s\+\w*$'
+    if a:arglead[0] is# '-' || empty(a:arglead) && a:cmdline !~# '\%(-compile\|-show\)\s\+\w*$'
         return join(options, "\n")
     else
         return join(['circo', 'dot', 'dot2text', 'fdp', 'neato', 'sfdp', 'twopi'], "\n")
@@ -1010,8 +1010,6 @@ fu! graph#cmd_complete(arglead, cmdline, _p) abort "{{{1
 endfu
 
 fu! graph#omni_complete(findstart, base) abort "{{{1
-    " pas con!
-    "     echomsg 'findstart='.a:findstart.', base='.a:base
     if a:findstart
         let line = getline('.')
         let pos = col('.') - 1
@@ -1025,7 +1023,7 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             endwhile
         endif
 
-        if line[withspacepos - 1] == '='
+        if line[withspacepos - 1] is# '='
             " label=...?
             let labelpos = withspacepos - 1
             " ignore spaces
@@ -1038,23 +1036,23 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             endwhile
             let labelstr=strpart(line, labelpos, withspacepos - 1 - labelpos)
 
-            let s:completion_type = labelstr == 'shape'
+            let s:completion_type = labelstr is# 'shape'
             \?                          'shape'
             \:                      labelstr =~ 'fontname'
             \?                          'font'
             \:                      labelstr =~ 'color'
             \?                          'color'
-            \:                      labelstr == 'arrowhead'
+            \:                      labelstr is# 'arrowhead'
             \?                          'arrowhead'
-            \:                      labelstr == 'rank'
+            \:                      labelstr is# 'rank'
             \?                          'rank'
-            \:                      labelstr == 'headport' || labelstr == 'tailport'
+            \:                      labelstr is# 'headport' || labelstr is# 'tailport'
             \?                          'port'
-            \:                      labelstr == 'rankdir'
+            \:                      labelstr is# 'rankdir'
             \?                          'rankdir'
-            \:                      labelstr == 'style'
+            \:                      labelstr is# 'style'
             \?                          'style'
-            \:                      labelstr == 'labeljust'
+            \:                      labelstr is# 'labeljust'
             \?                          'just'
             \:                      index([
             \                               'center',
@@ -1067,7 +1065,7 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             \                             ],
             \                              labelstr) >= 0
             \?                          'boolean'
-            \:                      labelstr == 'labelloc'
+            \:                      labelstr is# 'labelloc'
             \?                          'loc'
             \:                          ''
 
@@ -1178,7 +1176,7 @@ fu! s:show(cmd,line1,line2) abort "{{{1
     "     call s:compile('dot')
     " endif
 
-    if s:compile(a:cmd, a:line1, a:line2) ==# 'fail'
+    if s:compile(a:cmd, a:line1, a:line2) is# 'fail'
         return
     endif
 

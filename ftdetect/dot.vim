@@ -1,5 +1,5 @@
 fun! s:detect_dot()
-    if getline(1) ==# 'digraph'
+    if getline(1) is# 'digraph'
         set filetype=dot
     endif
 endfun
