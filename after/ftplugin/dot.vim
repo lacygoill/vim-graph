@@ -1,6 +1,6 @@
 " Commands {{{1
 
-com! -buffer -range=% -nargs=+  -complete=custom,graph#cmd_complete  Graph
+com! -bar -buffer -range=% -nargs=+  -complete=custom,graph#cmd_complete  Graph
 \     call graph#cmd(<q-args>, <line1>, <line2>)
 
 cnorea  <buffer><expr>  graph  getcmdtype() is# ':' && getcmdline() is# 'graph'

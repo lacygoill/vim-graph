@@ -7,6 +7,30 @@ let g:autoloaded_graph = 1
 " There are 2 new kinds of attributes (S and C).
 " We don't take them into account in the omni completion function.
 
+" TODO:
+" Implement a command to convert a pdf to a png/jpeg. Only format to be accepted
+" on a forum.
+" Study this command:
+"
+"         $ convert -verbose       \
+"                   -density 150   \
+"                   -trim          \
+"                   input.pdf      \
+"                                  \
+"                   -quality 100   \
+"                   -flatten       \
+"                   -sharpen 0x1.0 \
+"                   output.jpg     \
+"
+" Source:
+" https://stackoverflow.com/a/6605085/9110115
+"
+" Or maybe a simpler and faster tool would be `pdftoppm`:
+"
+"         $ pdftoppm input.pdf output -png
+"
+" https://askubuntu.com/a/50180
+
 " Variables {{{1
 
 " This is  the variable you need  to change, if you  want to view your  graph in
@@ -1168,7 +1192,7 @@ fu! s:interactive() abort "{{{1
 endfu
 
 fu! s:output_file() abort "{{{1
-    return expand('%:p:r').'.'.s:FORMAT
+    return expand('%:p:h:h').'/'.expand('%:t:r').'.'.s:FORMAT
 endfu
 
 fu! s:show(cmd,line1,line2) abort "{{{1
