@@ -1171,6 +1171,27 @@ fu! s:compile(cmd, line1, line2) abort "{{{1
     return 1
 endfu
 
+fu! graph#edit_diagram() abort "{{{1
+    let line = getline('.')
+    let path = matchstr(line, '\v%(%'.col('.').'c.*)@<!\[.{-}\]\(\zs.{-}\ze\)')
+    let fname = fnamemodify(path, ':t:r').'.dot'
+    let path = fnamemodify(path, ':h').'/src/'.fname
+    let path = substitute(path, '^\s*\.', expand('%:p:h'), '')
+
+    if !filereadable(path)
+        return
+    endif
+
+    sp | exe 'e '.path
+    nno  <buffer><nowait><silent>  q  :<c-u>close<cr>
+    augroup compile_diagram_on_write
+        au! * <buffer>
+        au  BufWritePost  <buffer>  Graph -compile
+        \|                          exe 'au!  compile_diagram_on_write'
+        \|                               aug! compile_diagram_on_write
+    augroup END
+endfu
+
 fu! s:interactive() abort "{{{1
     " FIXME:
     " Would it be possible to support other commands (neato, twopi, …)?
