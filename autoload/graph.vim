@@ -20,7 +20,7 @@ let g:autoloaded_graph = 1
 "                   -quality 100   \
 "                   -flatten       \
 "                   -sharpen 0x1.0 \
-"                   output.jpg     \
+"                   output.jpg
 "
 " Source:
 " https://stackoverflow.com/a/6605085/9110115
@@ -48,7 +48,7 @@ let s:completion_type = ''
 
 " arrowhead {{{2
 
-let s:arrowheads = [
+let s:ARROWHEAD = [
 \    {'word': 'box'},
 \    {'word': 'crow'},
 \    {'word': 'curve'},
@@ -76,7 +76,7 @@ let s:arrowheads = [
 "         https://graphviz.gitlab.io/_pages/doc/info/attrs.html
 "         https://graphviz.gitlab.io/documentation
 
-let s:attrs = [
+let s:ATTRS = [
 \    {'word': 'Damping=',       'menu': 'Factor damping force motions [G]'},
 \    {'word': 'K=',             'menu': 'Spring constant used in virtual physical model [G,C]'},
 \    {'word': 'URL=',           'menu': 'Hyperlinks incorporated into device-dependent output [E,N,G,C]'},
@@ -175,14 +175,14 @@ let s:attrs = [
 
 " boolean {{{2
 
-let s:boolean = [
+let s:BOOLEAN = [
 \    {'word': 'true'},
 \    {'word': 'false'},
 \ ]
 
 " color {{{2
 
-let s:color = [
+let s:COLOR = [
 \    { 'word': 'aliceblue' },
 \    { 'word': 'antiquewhite' },
 \    { 'word': 'antiquewhite1' },
@@ -842,7 +842,9 @@ let s:color = [
 
 " direction {{{2
 
-let s:dir = [
+" FIXME:
+" Not used anywhere.
+let s:DIR = [
 \    {'word': 'forward'},
 \    {'word': 'back'},
 \    {'word': 'both'},
@@ -851,7 +853,7 @@ let s:dir = [
 
 " font {{{2
 
-let s:font = [
+let s:FONT = [
 \    {'abbr': 'Courier'          , 'word': '"Courier"'},
 \    {'abbr': 'Courier-Bold'     , 'word': '"Courier-Bold"'},
 \    {'abbr': 'Courier-Oblique'  , 'word': '"Courier-Oblique"'},
@@ -868,7 +870,7 @@ let s:font = [
 
 " justification {{{2
 
-let s:just = [
+let s:JUST = [
 \    {'word': 'centered'},
 \    {'word': 'l'},
 \    {'word': 'r'},
@@ -876,7 +878,7 @@ let s:just = [
 
 " location {{{2
 
-let s:loc = [
+let s:LOC = [
 \    {'word': 'b', 'menu': 'bottom'},
 \    {'word': 'c', 'menu': 'center'},
 \    {'word': 't', 'menu': 'top'},
@@ -884,7 +886,7 @@ let s:loc = [
 
 " port {{{2
 
-let s:port = [
+let s:PORT = [
 \    {'word': '_',   'menu': 'appropriate side or center (default)'},
 \    {'word': 'c',   'menu': 'center'},
 \    {'word': 'e'},
@@ -899,7 +901,7 @@ let s:port = [
 
 " rank {{{2
 
-let s:rank = [
+let s:RANK = [
 \    {'word': 'same'},
 \    {'word': 'min'},
 \    {'word': 'max'},
@@ -909,7 +911,7 @@ let s:rank = [
 
 " rankdir {{{2
 
-let s:rankdir = [
+let s:RANKDIR = [
 \    {'word': 'BT'},
 \    {'word': 'LR'},
 \    {'word': 'RL'},
@@ -918,7 +920,7 @@ let s:rankdir = [
 
 " shape {{{2
 
-let s:shape = [
+let s:SHAPE = [
 \    {'word': 'Mcircle'},
 \    {'word': 'Mdiamond'},
 \    {'word': 'Mrecord'},
@@ -984,7 +986,7 @@ let s:shape = [
 
 " style {{{2
 
-let s:style = [
+let s:STYLE = [
 \    {'word': 'tapered',   'menu': '[E]'},
 \    {'word': 'radial',    'menu': '[N,G,C]'},
 \    {'word': 'diagonals', 'menu': '[N]'},
@@ -1061,23 +1063,23 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             let labelstr=strpart(line, labelpos, withspacepos - 1 - labelpos)
 
             let s:completion_type = labelstr is# 'shape'
-            \?                          'shape'
+            \?                          'SHAPE'
             \:                      labelstr =~ 'fontname'
-            \?                          'font'
+            \?                          'FONT'
             \:                      labelstr =~ 'color'
-            \?                          'color'
+            \?                          'COLOR'
             \:                      labelstr is# 'arrowhead'
-            \?                          'arrowhead'
+            \?                          'ARROWHEAD'
             \:                      labelstr is# 'rank'
-            \?                          'rank'
+            \?                          'RANK'
             \:                      labelstr is# 'headport' || labelstr is# 'tailport'
-            \?                          'port'
+            \?                          'PORT'
             \:                      labelstr is# 'rankdir'
-            \?                          'rankdir'
+            \?                          'RANKDIR'
             \:                      labelstr is# 'style'
-            \?                          'style'
+            \?                          'STYLE'
             \:                      labelstr is# 'labeljust'
-            \?                          'just'
+            \?                          'JUST'
             \:                      index([
             \                               'center',
             \                               'compound',
@@ -1088,9 +1090,9 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             \                               'regular',
             \                             ],
             \                              labelstr) >= 0
-            \?                          'boolean'
+            \?                          'BOOLEAN'
             \:                      labelstr is# 'labelloc'
-            \?                          'loc'
+            \?                          'LOC'
             \:                          ''
 
         elseif line[withspacepos - 1] =~ ',\|\['
@@ -1118,20 +1120,20 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
     else
 
         if s:completion_type =~# '^attr'
-            return filter(copy(s:attrs), {i,v ->     stridx(v.word, a:base) ==# 0
+            return filter(copy(s:ATTRS), {i,v ->     stridx(v.word, a:base) ==# 0
             \                                     && v.menu =~ '\[.*'.toupper(s:completion_type[4]).'.*\]' })
         elseif index([
-            \          'arrowhead',
-            \          'boolean',
-            \          'color',
-            \          'font',
-            \          'just',
-            \          'loc',
-            \          'port',
-            \          'rank',
-            \          'rankdir',
-            \          'shape',
-            \          'style',
+            \          'ARROWHEAD',
+            \          'BOOLEAN',
+            \          'COLOR',
+            \          'FONT',
+            \          'JUST',
+            \          'LOC',
+            \          'PORT',
+            \          'RANK',
+            \          'RANKDIR',
+            \          'SHAPE',
+            \          'STYLE',
             \], s:completion_type) ==# -1
             return []
         endif
