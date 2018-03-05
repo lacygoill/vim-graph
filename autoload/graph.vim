@@ -1028,11 +1028,10 @@ fu! graph#cmd_complete(arglead, cmdline, _p) abort "{{{1
     \               '-interactive ',
     \               '-show ',
     \             ]
-    if a:arglead[0] is# '-' || empty(a:arglead) && a:cmdline !~# '\%(-compile\|-show\)\s\+\w*$'
-        return join(options, "\n")
-    else
-        return join(['circo', 'dot', 'dot2text', 'fdp', 'neato', 'sfdp', 'twopi'], "\n")
-    endif
+
+    return a:arglead[0] is# '-' || empty(a:arglead) && a:cmdline !~# '\%(-compile\|-show\)\s\+\w*$'
+    \?         join(options, "\n")
+    \:         join(['circo', 'dot', 'dot2text', 'fdp', 'neato', 'sfdp', 'twopi'], "\n")
 endfu
 
 fu! graph#omni_complete(findstart, base) abort "{{{1
@@ -1150,14 +1149,24 @@ fu! s:compile(cmd, line1, line2) abort "{{{1
             call lg#catch_error()
             return 'fail'
         endtry
-    elseif !filereadable(s:output_file())
-        try
-            throw 'E8011: [graph]  output file not writable '.s:output_file()
-        catch
-            call lg#catch_error()
-            return 'fail'
-        endtry
     endif
+    " FIXME:
+    " The directory could be non writable.
+    "
+    " `filereadable()` is not the right check.
+    "
+    " Maybe the `pdf` file doesn't exist yet,  but that doesn't mean it can't be
+    " created. We need a  condition to test whether the directory  exists and is
+    " writable.
+
+    " elseif !filereadable(s:output_file())
+    "     try
+    "         throw 'E8011: [graph]  output file not writable '.s:output_file()
+    "     catch
+    "         call lg#catch_error()
+    "         return 'fail'
+    "     endtry
+    " endif
 
     let file = expand('%:p')
     if [a:line1, a:line2] !=# [1, line('$')]
@@ -1181,14 +1190,56 @@ fu! s:compile(cmd, line1, line2) abort "{{{1
     return 1
 endfu
 
-fu! graph#edit_diagram() abort "{{{1
+fu! graph#create_diagram() abort "{{{1
+    let [col1, col2] = [col("'<"), col("'>")]
+    let lnum = line('.')
     let line = getline('.')
-    let path = matchstr(line, '\v%(%'.col('.').'c.*)@<!\[.{-}\]\(\zs.{-}\ze\)')
+
+    let pat = '.*\%'.col1.'c\zs.*\%'.col2.'c.\ze.*'
+    let fname = substitute(matchstr(getline('.'), pat), '\s\+', '_', 'g')
+
+    " prepend the selection with an open square bracket
+    let line =substitute(line, '.*\%'.col1.'c\zs', '[', '')
+    " prefix it with a closing square bracket
+    let line = substitute(line, '.*\%'.col2.'c..\zs', ']', '')
+    "                                         ││
+    "                                         │└ to take into account the open square bracket
+    "                                         │  we've just inserted
+    "                                         │
+    "                                         └ to include the last character in the selection
+    "                                           INSIDE the brackets
+
+    let wiki_root = expand('%:p:h:h')
+    let wikiname = expand('%:h:t')
+    let path_to_wiki = wiki_root.'/graph/'.wikiname
+    let path_to_dot = path_to_wiki.'/src/'.fname.'.dot'
+
+    let path_to_pdf = path_to_wiki.'/'.fname.'.pdf'
+    let path_to_pdf = substitute(path_to_pdf, $MY_WIKI, '$MY_WIKI', '')
+    " append `(path_to_file.pdf)`
+    let line = substitute(line, '.*\%'.col2.'c...\zs',
+    \                     '('.path_to_pdf.')',
+    \                     '')
+    " \                     '('.substitute(fnamemodify(path, ':h'), $MY_WIKI, '$MY_WIKI', '').'.pdf)',
+    call setline(lnum, line)
+
+    " open a split to write source code of diagram
+    sp | exe 'e '.path_to_dot
+endfu
+
+fu! graph#edit_diagram() abort "{{{1
+    let cursor_not_before = '%(%'.col('.').'c|%(%'.col('.').'c.*)@<!)'
+    let cursor_not_after = '%(.*%'.col('.').'c)@!'
+    let pat = '\v'.cursor_not_before.'\[.{-}\]\(\zs.{-}\ze\)'.cursor_not_after
+
+    let path = matchstr(getline('.'), pat)
     let fname = fnamemodify(path, ':t:r').'.dot'
     let path = fnamemodify(path, ':h').'/src/'.fname
     let path = substitute(path, '^\s*\.', expand('%:p:h'), '')
 
-    if !filereadable(path)
+    "                ┌ in case the path contains an environment variable
+    "                │
+    if !filereadable(expand(path))
         return
     endif
 
@@ -1241,3 +1292,4 @@ fu! s:show(cmd,line1,line2) abort "{{{1
     endif
     call system(s:VIEWER.' '.shellescape(s:output_file()).' &')
 endfu
+
