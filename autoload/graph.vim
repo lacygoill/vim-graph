@@ -1119,7 +1119,7 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
     else
 
         if s:completion_type =~# '^attr'
-            return filter(copy(s:ATTRS), {i,v ->     stridx(v.word, a:base) ==# 0
+            return filter(copy(s:ATTRS), {i,v ->     stridx(v.word, a:base) == 0
             \                                     && v.menu =~ '\[.*'.toupper(s:completion_type[4]).'.*\]' })
         elseif index([
             \          'ARROWHEAD',
@@ -1133,11 +1133,11 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             \          'RANKDIR',
             \          'SHAPE',
             \          'STYLE',
-            \], s:completion_type) ==# -1
+            \], s:completion_type) == -1
             return []
         endif
 
-        return filter(copy(s:{s:completion_type}), {i,v -> stridx(v.word, a:base) ==# 0 })
+        return filter(copy(s:{s:completion_type}), {i,v -> stridx(v.word, a:base) == 0 })
     endif
 endfu
 
@@ -1169,12 +1169,16 @@ fu! s:compile(cmd, line1, line2) abort "{{{1
     " endif
 
     let file = expand('%:p')
-    if [a:line1, a:line2] !=# [1, line('$')]
+    if [a:line1, a:line2] != [1, line('$')]
         let lines = getline(a:line1, a:line2)
         let file = tempname()
         call writefile(lines, file)
     endif
 
+    " FIXME:
+    " We're building and executing the shell compilation command manually.
+    " Shouldn't we use `:make` instead?
+    " If not, then why do we configure 'makeprg' in the compiler/ directory.
     let logfile = tempname().'.log'
     call system(printf('(%s -T'.s:FORMAT.' %s -o %s 2>&1) | tee %s',
     \          a:cmd,
