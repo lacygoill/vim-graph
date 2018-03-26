@@ -1030,8 +1030,8 @@ fu! graph#cmd_complete(arglead, cmdline, _p) abort "{{{1
     \             ]
 
     return a:arglead[0] is# '-' || empty(a:arglead) && a:cmdline !~# '\%(-compile\|-show\)\s\+\w*$'
-    \?         join(options, "\n")
-    \:         join(['circo', 'dot', 'dot2text', 'fdp', 'neato', 'sfdp', 'twopi'], "\n")
+       \ ?     join(options, "\n")
+       \ :     join(['circo', 'dot', 'dot2text', 'fdp', 'neato', 'sfdp', 'twopi'], "\n")
 endfu
 
 fu! graph#omni_complete(findstart, base) abort "{{{1
@@ -1062,37 +1062,37 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             let labelstr=strpart(line, labelpos, withspacepos - 1 - labelpos)
 
             let s:completion_type = labelstr is# 'shape'
-            \?                          'SHAPE'
-            \:                      labelstr =~ 'fontname'
-            \?                          'FONT'
-            \:                      labelstr =~ 'color'
-            \?                          'COLOR'
-            \:                      labelstr is# 'arrowhead'
-            \?                          'ARROWHEAD'
-            \:                      labelstr is# 'rank'
-            \?                          'RANK'
-            \:                      labelstr is# 'headport' || labelstr is# 'tailport'
-            \?                          'PORT'
-            \:                      labelstr is# 'rankdir'
-            \?                          'RANKDIR'
-            \:                      labelstr is# 'style'
-            \?                          'STYLE'
-            \:                      labelstr is# 'labeljust'
-            \?                          'JUST'
-            \:                      index([
-            \                               'center',
-            \                               'compound',
-            \                               'concentrate',
-            \                               'constraint',
-            \                               'fixedsize',
-            \                               'labelfloat',
-            \                               'regular',
-            \                             ],
-            \                              labelstr) >= 0
-            \?                          'BOOLEAN'
-            \:                      labelstr is# 'labelloc'
-            \?                          'LOC'
-            \:                          ''
+                                \ ?     'SHAPE'
+                                \ : labelstr =~ 'fontname'
+                                \ ?     'FONT'
+                                \ : labelstr =~ 'color'
+                                \ ?     'COLOR'
+                                \ : labelstr is# 'arrowhead'
+                                \ ?     'ARROWHEAD'
+                                \ : labelstr is# 'rank'
+                                \ ?     'RANK'
+                                \ : labelstr is# 'headport' || labelstr is# 'tailport'
+                                \ ?     'PORT'
+                                \ : labelstr is# 'rankdir'
+                                \ ?     'RANKDIR'
+                                \ : labelstr is# 'style'
+                                \ ?     'STYLE'
+                                \ : labelstr is# 'labeljust'
+                                \ ?     'JUST'
+                                \ : index([
+                                \           'center',
+                                \           'compound',
+                                \           'concentrate',
+                                \           'constraint',
+                                \           'fixedsize',
+                                \           'labelfloat',
+                                \           'regular',
+                                \         ],
+                                \          labelstr) >= 0
+                                \ ?     'BOOLEAN'
+                                \ : labelstr is# 'labelloc'
+                                \ ?     'LOC'
+                                \ :     ''
 
         elseif line[withspacepos - 1] =~ ',\|\['
             " attr
@@ -1103,14 +1103,14 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             endwhile
 
             let s:completion_type = attrstr =~ '^\s*node'
-            \?                          'attrnode'
-            \:                      attrstr =~ '^\s*edge'
-            \?                          'attredge'
-            \:                      attrstr =~ '\( -> \)\|\( -- \)'
-            \?                          'attredge'
-            \:                      attrstr =~ '^\s*graph'
-            \?                          'attrgraph'
-            \:                          'attrnode'
+                                \ ?     'attrnode'
+                                \ : attrstr =~ '^\s*edge'
+                                \ ?     'attredge'
+                                \ : attrstr =~ '\( -> \)\|\( -- \)'
+                                \ ?     'attredge'
+                                \ : attrstr =~ '^\s*graph'
+                                \ ?     'attrgraph'
+                                \ :     'attrnode'
         else
             let s:completion_type = ''
         endif
