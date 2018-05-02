@@ -1133,7 +1133,7 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             \          'RANKDIR',
             \          'SHAPE',
             \          'STYLE',
-            \], s:completion_type) ==# -1
+            \ ], s:completion_type) ==# -1
             return []
         endif
 
@@ -1252,8 +1252,8 @@ fu! graph#edit_diagram() abort "{{{1
     augroup compile_diagram_on_write
         au! * <buffer>
         au  BufWritePost  <buffer>  Graph -compile
-        \|                          exe 'au!  compile_diagram_on_write'
-        \|                               aug! compile_diagram_on_write
+        \ |                         exe 'au!  compile_diagram_on_write'
+        \ |                              aug! compile_diagram_on_write
     augroup END
 endfu
 
