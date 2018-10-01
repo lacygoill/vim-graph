@@ -1273,7 +1273,7 @@ fu! s:interactive() abort "{{{1
         endtry
     endif
 
-    sil exe '!dot -Txlib '.shellescape(expand('%:p'),1).' &'
+    sil exe '!dot -Txlib '.expand('%:p:S').' &'
     redraw!
 endfu
 
