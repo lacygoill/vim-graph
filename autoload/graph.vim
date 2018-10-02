@@ -1273,7 +1273,8 @@ fu! s:interactive() abort "{{{1
         endtry
     endif
 
-    sil call system('!dot -Txlib '.expand('%:p:S').' &')
+    " do NOT use `system()`, the graph wouldn't be shown
+    !dot -Txlib %:p:S &
 endfu
 
 fu! s:output_file() abort "{{{1
