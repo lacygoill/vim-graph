@@ -1273,8 +1273,7 @@ fu! s:interactive() abort "{{{1
         endtry
     endif
 
-    sil !dot -Txlib %:p:S &
-    redraw!
+    sil call system('!dot -Txlib '.expand('%:p:S').' &')
 endfu
 
 fu! s:output_file() abort "{{{1
