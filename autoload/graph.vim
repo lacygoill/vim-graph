@@ -1180,12 +1180,12 @@ fu! s:compile(cmd, line1, line2) abort "{{{1
     " Shouldn't we use `:make` instead?
     " If not, then why do we configure 'makeprg' in the compiler/ directory.
     let logfile = tempname().'.log'
-    call system(printf('(%s -T'.s:FORMAT.' %s -o %s 2>&1) | tee %s',
-    \          a:cmd,
-    \          shellescape(file),
-    \          shellescape(s:output_file()),
-    \          shellescape(logfile)
-    \ ))
+    sil call system(printf('(%s -T'.s:FORMAT.' %s -o %s 2>&1) | tee %s',
+        \ a:cmd,
+        \ shellescape(file),
+        \ shellescape(s:output_file()),
+        \ shellescape(logfile)
+        \ ))
 
     if getfsize(logfile)
         exe 'cfile '.escape(logfile, ' \"!?''')
