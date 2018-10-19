@@ -1273,8 +1273,7 @@ fu! s:interactive() abort "{{{1
         endtry
     endif
 
-    " do NOT use `system()`, the graph wouldn't be shown
-    !dot -Txlib %:p:S &
+    sil call system('dot -Txlib '.expand('%:p:S').' &')
 endfu
 
 fu! s:output_file() abort "{{{1
@@ -1294,6 +1293,6 @@ fu! s:show(cmd,line1,line2) abort "{{{1
         echoerr 'Viewer program not found:  's:VIEWER
         return
     endif
-    call system(s:VIEWER.' '.shellescape(s:output_file()).' &')
+    sil call system(s:VIEWER.' '.shellescape(s:output_file()).' &')
 endfu
 
