@@ -1137,7 +1137,7 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             return []
         endif
 
-        return filter(copy(s:{s:completion_type}), {i,v -> stridx(v.word, a:base) ==# 0 })
+        return filter(copy(s:{s:completion_type}), {i,v -> stridx(v.word, a:base) ==# 0})
     endif
 endfu
 
