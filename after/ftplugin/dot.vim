@@ -36,16 +36,16 @@ compiler dot
 let b:undo_ftplugin = get(b:, 'undo_ftplugin', '')
     \ . (empty(get(b:, 'undo_ftplugin', '')) ? '' : '|')
     \ . "
-    \ setl cms< efm< mp< ofu<
-    \|unlet! b:mc_chain
+    \   setl cms< efm< mp< ofu<
+    \ | unlet! b:mc_chain
     \
-    \|nunmap <buffer> <bar>c
-    \|xunmap <buffer> <bar>c
-    \|nunmap <buffer> <bar>i
-    \|nunmap <buffer> <bar>s
-    \|xunmap <buffer> <bar>s
+    \ | exe 'nunmap <buffer> <bar>c'
+    \ | exe 'xunmap <buffer> <bar>c'
+    \ | exe 'nunmap <buffer> <bar>i'
+    \ | exe 'nunmap <buffer> <bar>s'
+    \ | exe 'xunmap <buffer> <bar>s'
     \
-    \|cuna <buffer> graph
-    \|delc Graph
-    \"
+    \ | exe 'cuna <buffer> graph'
+    \ | delc Graph
+    \ "
 
