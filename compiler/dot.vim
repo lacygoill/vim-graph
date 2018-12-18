@@ -5,9 +5,9 @@ if exists(':CompilerSet') !=# 2
 endif
 
 " adapted from $VIMRUNTIME/compiler/dot.vim
-CompilerSet mp=dot\ -T$*\ '%:p:S'\ -o\ '%:p:r:S.$*'
-"                              │
-"                              └ escape characters special to the shell
+CompilerSet mp=dot\ -T$*\ %:p:S\ -o\ %:p:r:S.$*
+"                             │
+"                             └ escape characters special to the shell
 
 " Original_value:
 "     setl efm=%EError:\ %f:%l:%m,%+Ccontext:\ %.%#,%WWarning:\ %m
