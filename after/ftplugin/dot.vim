@@ -36,7 +36,8 @@ compiler dot
 let b:undo_ftplugin = get(b:, 'undo_ftplugin', '')
     \ . (empty(get(b:, 'undo_ftplugin', '')) ? '' : '|')
     \ . "
-    \   setl cms< efm< mp< ofu<
+    \   setl cms< ofu<
+    \ | set efm< mp<
     \ | unlet! b:mc_chain
     \
     \ | exe 'nunmap <buffer> <bar>c'
