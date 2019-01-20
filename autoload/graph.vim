@@ -1252,8 +1252,7 @@ fu! graph#edit_diagram() abort "{{{1
     augroup compile_diagram_on_write
         au! * <buffer>
         au  BufWritePost  <buffer>  Graph -compile
-        \ |                         exe 'au!  compile_diagram_on_write'
-        \ |                              aug! compile_diagram_on_write
+        au  BufWritePost  <buffer>  exe 'au! compile_diagram_on_write' | aug! compile_diagram_on_write
     augroup END
 endfu
 
