@@ -25,7 +25,7 @@ let b:mc_chain = [
     \ 'keyp',
     \ ]
 
-setl cms=//%s
+setl cms=//\ %s
 
 setl ofu=graph#omni_complete
 
