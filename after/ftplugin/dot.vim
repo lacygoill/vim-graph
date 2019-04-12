@@ -33,10 +33,9 @@ compiler dot
 
 " Teardown {{{1
 
-let b:undo_ftplugin = get(b:, 'undo_ftplugin', '')
-    \ . (empty(get(b:, 'undo_ftplugin', '')) ? '' : '|')
+let b:undo_ftplugin = get(b:, 'undo_ftplugin', 'exe')
     \ . "
-    \   setl cms< ofu<
+    \ | setl cms< ofu<
     \ | set efm< mp<
     \ | unlet! b:mc_chain
     \
