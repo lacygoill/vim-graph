@@ -1119,7 +1119,7 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
     else
 
         if s:completion_type =~# '^attr'
-            return filter(copy(s:ATTRS), {i,v ->     stridx(v.word, a:base) ==# 0
+            return filter(copy(s:ATTRS), {_,v ->     stridx(v.word, a:base) ==# 0
             \                                     && v.menu =~ '\[.*'.toupper(s:completion_type[4]).'.*\]' })
         elseif index([
             \ 'ARROWHEAD',
@@ -1137,7 +1137,7 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
             return []
         endif
 
-        return filter(copy(s:{s:completion_type}), {i,v -> stridx(v.word, a:base) ==# 0})
+        return filter(copy(s:{s:completion_type}), {_,v -> stridx(v.word, a:base) ==# 0})
     endif
 endfu
 
