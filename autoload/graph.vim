@@ -1232,23 +1232,30 @@ fu! graph#create_diagram() abort "{{{1
 endfu
 
 fu! graph#edit_diagram() abort "{{{1
-    let cursor_not_before = '%(%'.col('.').'c|%(%'.col('.').'c.*)@<!)'
-    let cursor_not_after = '%(.*%'.col('.').'c)@!'
-    let pat = '\v'.cursor_not_before.'\[.{-}\]\(\zs.{-}\ze\)'.cursor_not_after
+    let col = col('.')
+    " Used to extract `[five](six)`, when the cursor is on `six`:{{{
+    "
+    "     one [two](three) (four) [five](six) seven
+    "                                     ^
+    "}}}
+    let pat =
+        \   '\[[^)]*\%'..col..'c[^)]*)'
+        \ ..'\|'
+        \ ..'\%'..col..'c\[[^)]*)'
 
     let path = matchstr(getline('.'), pat)
+    " used to extract `six` from `[five](six)`
+    let path = matchstr(path, '\[.\{-}\](\zs.\{-}\ze)')
     let fname = fnamemodify(path, ':t:r').'.dot'
     let path = fnamemodify(path, ':h').'/src/'.fname
     let path = substitute(path, '^\s*\.', expand('%:p:h'), '')
 
     "                ┌ in case the path contains an environment variable
     "                │
-    if !filereadable(expand(path))
-        return
-    endif
+    if !filereadable(expand(path)) | return | endif
 
     sp | exe 'e '.path
-    nno <buffer><expr><nowait><silent> q reg_recording() isnot# '' ? 'q' : ':<c-u>close!<cr>'
+    nno <buffer><expr><nowait><silent> q reg_recording() isnot# '' ? 'q' : ':<c-u>q<cr>'
     au BufWritePost <buffer> ++once sil! Graph -compile
 endfu
 
