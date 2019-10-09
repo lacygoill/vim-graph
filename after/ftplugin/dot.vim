@@ -3,7 +3,7 @@
 com! -bar -buffer -range=% -nargs=+  -complete=custom,graph#cmd_complete  Graph
 \     call graph#cmd(<q-args>, <line1>, <line2>)
 
-cnorea  <buffer><expr>  graph  getcmdtype() is# ':' && getcmdpos() ==# 6
+cnorea  <buffer><expr>  graph  getcmdtype() is# ':' && getcmdpos() == 6
 \                              ?    'Graph'
 \                              :    'graph'
 
