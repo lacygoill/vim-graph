@@ -1,11 +1,7 @@
 " Commands {{{1
 
-com! -bar -buffer -range=% -nargs=+  -complete=custom,graph#cmd_complete  Graph
+com -bar -buffer -range=% -nargs=+  -complete=custom,graph#cmd_complete Graph
 \     call graph#cmd(<q-args>, <line1>, <line2>)
-
-cnorea  <buffer><expr>  graph  getcmdtype() is# ':' && getcmdpos() == 6
-\                              ?    'Graph'
-\                              :    'graph'
 
 " Mappings {{{1
 
@@ -19,11 +15,11 @@ xno  <buffer><nowait><silent>  <bar>s  :Graph -show<cr>
 
 " Options {{{1
 
-let b:mc_chain = [
-    \ 'omni',
-    \ 'ulti',
-    \ 'keyp',
-    \ ]
+let b:mc_chain =<< trim END
+    omni
+    ulti
+    keyn
+END
 
 setl cms=//\ %s
 
@@ -45,7 +41,6 @@ let b:undo_ftplugin = get(b:, 'undo_ftplugin', 'exe')
     \ | exe 'nunmap <buffer> <bar>s'
     \ | exe 'xunmap <buffer> <bar>s'
     \
-    \ | exe 'cuna <buffer> graph'
     \ | delc Graph
     \ "
 

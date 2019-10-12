@@ -35,14 +35,14 @@ let g:autoloaded_graph = 1
 
 " This is  the variable you need  to change, if you  want to view your  graph in
 " another format.
-let s:FORMAT = 'pdf'
+const s:FORMAT = 'pdf'
 
-let s:VIEWERS = {
+const s:VIEWERS = {
 \    'pdf': 'zathura',
 \    'png': 'feh',
 \ }
 
-let s:VIEWER = get(s:VIEWERS, s:FORMAT, 'xdg-open')
+const s:VIEWER = get(s:VIEWERS, s:FORMAT, 'xdg-open')
 
 let s:completion_type = ''
 
@@ -73,8 +73,8 @@ let s:ARROWHEAD = [
 " We've stopped at layer.
 
 " Source:
-"         https://graphviz.gitlab.io/_pages/doc/info/attrs.html
-"         https://graphviz.gitlab.io/documentation
+" https://graphviz.gitlab.io/_pages/doc/info/attrs.html
+" https://graphviz.gitlab.io/documentation
 
 let s:ATTRS = [
     \ {'word': 'Damping=',       'menu': 'Factor damping force motions [G]'},
@@ -1001,7 +1001,7 @@ let s:STYLE = [
     \ {'word': 'solid',     'menu': '[E,N]'},
     \ ]
 
-fu! graph#cmd(action, line1, line2) abort "{{{1
+fu graph#cmd(action, line1, line2) abort "{{{1
     sil update
     let cmd = matchstr(a:action, '-compile\s*\zs\S\+')
     if empty(cmd)
@@ -1022,19 +1022,19 @@ fu! graph#cmd(action, line1, line2) abort "{{{1
     endif
 endfu
 
-fu! graph#cmd_complete(arglead, cmdline, _pos) abort "{{{1
-    let options = [
-        \ '-compile ',
-        \ '-interactive ',
-        \ '-show ',
-        \ ]
+fu graph#cmd_complete(arglead, cmdline, _pos) abort "{{{1
+    let options =<< trim END
+        -compile
+        -interactive
+        -show
+    END
 
     return a:arglead[0] is# '-' || empty(a:arglead) && a:cmdline !~# '\%(-compile\|-show\)\s\+\w*$'
        \ ?     join(options, "\n")
        \ :     join(['circo', 'dot', 'dot2text', 'fdp', 'neato', 'sfdp', 'twopi'], "\n")
 endfu
 
-fu! graph#omni_complete(findstart, base) abort "{{{1
+fu graph#omni_complete(findstart, base) abort "{{{1
     if a:findstart
         let line = getline('.')
         let pos = col('.') - 1
@@ -1141,7 +1141,7 @@ fu! graph#omni_complete(findstart, base) abort "{{{1
     endif
 endfu
 
-fu! s:compile(cmd, line1, line2) abort "{{{1
+fu s:compile(cmd, line1, line2) abort "{{{1
     if !executable(a:cmd)
         try
             throw 'E8010: [graph]  filter not available: '.a:cmd
@@ -1194,7 +1194,7 @@ fu! s:compile(cmd, line1, line2) abort "{{{1
     return 1
 endfu
 
-fu! graph#create_diagram() abort "{{{1
+fu graph#create_diagram() abort "{{{1
     let [col1, col2] = [col("'<"), col("'>")]
     let lnum = line('.')
     let line = getline('.')
@@ -1231,7 +1231,7 @@ fu! graph#create_diagram() abort "{{{1
     sp | exe 'e '.path_to_dot
 endfu
 
-fu! graph#edit_diagram() abort "{{{1
+fu graph#edit_diagram() abort "{{{1
     let col = col('.')
     " Used to extract `[five](six)`, when the cursor is on `six`:{{{
     "
@@ -1259,7 +1259,7 @@ fu! graph#edit_diagram() abort "{{{1
     au BufWritePost <buffer> ++once sil! Graph -compile
 endfu
 
-fu! s:interactive() abort "{{{1
+fu s:interactive() abort "{{{1
     " FIXME:
     " Would it be possible to support other commands (neato, twopi, …)?
 
@@ -1278,11 +1278,11 @@ fu! s:interactive() abort "{{{1
     sil call system('dot -Txlib '.expand('%:p:S').' &')
 endfu
 
-fu! s:output_file() abort "{{{1
+fu s:output_file() abort "{{{1
     return expand('%:p:h:h').'/'.expand('%:t:r').'.'.s:FORMAT
 endfu
 
-fu! s:show(cmd,line1,line2) abort "{{{1
+fu s:show(cmd,line1,line2) abort "{{{1
     " if !filereadable(s:output_file())
     "     call s:compile('dot')
     " endif
