@@ -1022,11 +1022,11 @@ fu graph#cmd(action, line1, line2) abort "{{{1
     endif
 endfu
 
-fu graph#cmd_complete(arglead, cmdline, _pos) abort "{{{1
+fu graph#cmd_complete(arglead, cmdline, _p) abort "{{{1
     let options =<< trim END
-        -compile
-        -interactive
-        -show
+    -compile
+    -interactive
+    -show
     END
 
     return a:arglead[0] is# '-' || empty(a:arglead) && a:cmdline !~# '\%(-compile\|-show\)\s\+\w*$'
