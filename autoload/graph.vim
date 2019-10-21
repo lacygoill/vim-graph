@@ -1024,9 +1024,9 @@ endfu
 
 fu graph#cmd_complete(arglead, cmdline, _p) abort "{{{1
     let options =<< trim END
-    -compile
-    -interactive
-    -show
+        -compile
+        -interactive
+        -show
     END
 
     return a:arglead[0] is# '-' || empty(a:arglead) && a:cmdline !~# '\%(-compile\|-show\)\s\+\w*$'

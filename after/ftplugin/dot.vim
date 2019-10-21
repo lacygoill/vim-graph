@@ -16,9 +16,9 @@ xno <buffer><nowait><silent> <bar>s :Graph -show<cr>
 " Options {{{1
 
 let b:mc_chain =<< trim END
-omni
-ulti
-keyn
+    omni
+    ulti
+    keyn
 END
 
 setl cms=//\ %s
