@@ -1298,3 +1298,17 @@ fu s:show(cmd,line1,line2) abort "{{{1
     sil call system(s:VIEWER.' '.shellescape(s:output_file()).' &')
 endfu
 
+fu graph#undo_ftplugin() abort "{{{1
+    setl cms< ofu<
+    set efm< mp<
+    unlet! b:mc_chain
+
+    nunmap <buffer> <bar>c
+    xunmap <buffer> <bar>c
+    nunmap <buffer> <bar>i
+    nunmap <buffer> <bar>s
+    xunmap <buffer> <bar>s
+
+    delc Graph
+endfu
+

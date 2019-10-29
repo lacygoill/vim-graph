@@ -30,17 +30,5 @@ compiler dot
 " Teardown {{{1
 
 let b:undo_ftplugin = get(b:, 'undo_ftplugin', 'exe')
-    \ ..'
-    \ | setl cms< ofu<
-    \ | set efm< mp<
-    \ | unlet! b:mc_chain
-    \
-    \ | exe "nunmap <buffer> <bar>c"
-    \ | exe "xunmap <buffer> <bar>c"
-    \ | exe "nunmap <buffer> <bar>i"
-    \ | exe "nunmap <buffer> <bar>s"
-    \ | exe "xunmap <buffer> <bar>s"
-    \
-    \ | delc Graph
-    \ '
+    \ ..'| call graph#undo_ftplugin()'
 
