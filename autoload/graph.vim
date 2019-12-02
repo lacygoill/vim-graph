@@ -1178,9 +1178,9 @@ fu s:compile(cmd, line1, line2) abort "{{{1
     " FIXME:
     " We're building and executing the shell compilation command manually.
     " Shouldn't we use `:make` instead?
-    " If not, then why do we configure 'makeprg' in the compiler/ directory.
+    " If not, then why do we configure `'mp'` in the `compiler/` directory.
     let logfile = tempname().'.log'
-    sil call system(printf('(%s -T'.s:FORMAT.' %s -o %s 2>&1) | tee %s',
+    sil call system(printf('(%s -T'..s:FORMAT..' %s -o %s 2>&1) | tee %s',
         \ a:cmd,
         \ shellescape(file),
         \ shellescape(s:output_file()),
@@ -1188,7 +1188,7 @@ fu s:compile(cmd, line1, line2) abort "{{{1
         \ ))
 
     if getfsize(logfile)
-        exe 'cfile '.escape(logfile, ' \"!?''')
+        exe 'cfile '..escape(logfile, ' \"!?''')
     endif
     call delete(logfile)
     return 1
@@ -1275,7 +1275,7 @@ fu s:interactive() abort "{{{1
         endtry
     endif
 
-    sil call system('dot -Txlib '.expand('%:p:S').' &')
+    sil call system('dot -Txlib '..expand('%:p:S')..' &')
 endfu
 
 fu s:output_file() abort "{{{1
@@ -1292,10 +1292,10 @@ fu s:show(cmd,line1,line2) abort "{{{1
     endif
 
     if !executable(s:VIEWER)
-        echoerr 'Viewer program not found:  's:VIEWER
+        echoerr 'Viewer program not found: '..s:VIEWER
         return
     endif
-    sil call system(s:VIEWER.' '.shellescape(s:output_file()).' &')
+    sil call system(s:VIEWER..' '..shellescape(s:output_file()).' &')
 endfu
 
 fu graph#undo_ftplugin() abort "{{{1
