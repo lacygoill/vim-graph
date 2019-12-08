@@ -1295,7 +1295,7 @@ fu s:show(cmd,line1,line2) abort "{{{1
         echoerr 'Viewer program not found: '..s:VIEWER
         return
     endif
-    sil call system(s:VIEWER..' '..shellescape(s:output_file()).' &')
+    sil call system(s:VIEWER..' '..shellescape(s:output_file())..' &')
 endfu
 
 fu graph#undo_ftplugin() abort "{{{1
