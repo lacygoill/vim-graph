@@ -1256,7 +1256,7 @@ fu graph#edit_diagram() abort "{{{1
 
     sp | exe 'e '.path
     nno <buffer><expr><nowait><silent> q reg_recording() isnot# '' ? 'q' : ':<c-u>q<cr>'
-    au BufWritePost <buffer> ++once sil! Graph -compile
+    au BufWritePost <buffer> ++once Graph -compile
 endfu
 
 fu s:interactive() abort "{{{1
