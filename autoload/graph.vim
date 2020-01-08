@@ -1012,7 +1012,7 @@ fu graph#cmd(action, line1, line2) abort "{{{1
         call s:compile(cmd, a:line1, a:line2)
     else
         let funcname = matchstr(a:action, '-\zs\S\+')
-        if empty(funcname) || !exists('*s:'.funcname)
+        if empty(funcname) || !exists('*s:'..funcname)
             return
         elseif funcname is# 'show'
             call s:show(cmd, a:line1, a:line2)
@@ -1120,7 +1120,7 @@ fu graph#omni_complete(findstart, base) abort "{{{1
 
         if s:completion_type =~# '^attr'
             return filter(copy(s:ATTRS), {_,v ->     stridx(v.word, a:base) == 0
-            \                                     && v.menu =~ '\[.*'.toupper(s:completion_type[4]).'.*\]' })
+            \                                     && v.menu =~ '\[.*'..toupper(s:completion_type[4])..'.*\]' })
         elseif index([
             \ 'ARROWHEAD',
             \ 'BOOLEAN',
@@ -1144,7 +1144,7 @@ endfu
 fu s:compile(cmd, line1, line2) abort "{{{1
     if !executable(a:cmd)
         try
-            throw 'E8010: [graph]  filter not available: '.a:cmd
+            throw 'E8010: [graph]  filter not available: '..a:cmd
         catch
             call lg#catch_error()
             return 'fail'
@@ -1179,7 +1179,7 @@ fu s:compile(cmd, line1, line2) abort "{{{1
     " We're building and executing the shell compilation command manually.
     " Shouldn't we use `:make` instead?
     " If not, then why do we configure `'mp'` in the `compiler/` directory.
-    let logfile = tempname().'.log'
+    let logfile = tempname()..'.log'
     sil call system(printf('(%s -T'..s:FORMAT..' %s -o %s 2>&1) | tee %s',
         \ a:cmd,
         \ shellescape(file),
@@ -1199,36 +1199,36 @@ fu graph#create_diagram() abort "{{{1
     let lnum = line('.')
     let line = getline('.')
 
-    let pat = '.*\%'.col1.'c\zs.*\%'.col2.'c.\ze.*'
+    let pat = '.*\%'..col1..'c\zs.*\%'..col2..'c.\ze.*'
     let fname = substitute(matchstr(getline('.'), pat), '\s\+', '_', 'g')
 
     " prepend the selection with an open square bracket
-    let line =substitute(line, '.*\%'.col1.'c\zs', '[', '')
+    let line =substitute(line, '.*\%'..col1..'c\zs', '[', '')
     " prefix it with a closing square bracket
-    let line = substitute(line, '.*\%'.col2.'c..\zs', ']', '')
-    "                                         ││
-    "                                         │└ to take into account the open square bracket
-    "                                         │  we've just inserted
-    "                                         │
-    "                                         └ to include the last character in the selection
-    "                                           INSIDE the brackets
+    let line = substitute(line, '.*\%'..col2..'c..\zs', ']', '')
+    "                                           ││
+    "                                           │└ to take into account the open square bracket
+    "                                           │  we've just inserted
+    "                                           │
+    "                                           └ to include the last character in the selection
+    "                                             INSIDE the brackets
 
     let wiki_root = expand('%:p:h:h')
     let wikiname = expand('%:h:t')
-    let path_to_wiki = wiki_root.'/graph/'.wikiname
-    let path_to_dot = path_to_wiki.'/src/'.fname.'.dot'
+    let path_to_wiki = wiki_root..'/graph/'..wikiname
+    let path_to_dot = path_to_wiki..'/src/'..fname..'.dot'
 
-    let path_to_pdf = path_to_wiki.'/'.fname.'.pdf'
-    let path_to_pdf = substitute(path_to_pdf, $MY_WIKI, '$MY_WIKI', '')
+    let path_to_pdf = path_to_wiki..'/'..fname..'.pdf'
+    let path_to_pdf = substitute(path_to_pdf, '\V'..$MY_WIKI, '$MY_WIKI', '')
     " append `(path_to_file.pdf)`
-    let line = substitute(line, '.*\%'.col2.'c...\zs',
-    \                     '('.path_to_pdf.')',
+    let line = substitute(line, '.*\%'..col2..'c...\zs',
+    \                     '('..path_to_pdf..')',
     \                     '')
-    " \                     '('.substitute(fnamemodify(path, ':h'), $MY_WIKI, '$MY_WIKI', '').'.pdf)',
+    " \                     '('.substitute(fnamemodify(path, ':h'), '\V'..$MY_WIKI, '$MY_WIKI', '').'.pdf)',
     call setline(lnum, line)
 
     " open a split to write source code of diagram
-    sp | exe 'e '.path_to_dot
+    sp | exe 'e '..path_to_dot
 endfu
 
 fu graph#edit_diagram() abort "{{{1
@@ -1246,15 +1246,15 @@ fu graph#edit_diagram() abort "{{{1
     let path = matchstr(getline('.'), pat)
     " used to extract `six` from `[five](six)`
     let path = matchstr(path, '\[.\{-}\](\zs.\{-}\ze)')
-    let fname = fnamemodify(path, ':t:r').'.dot'
-    let path = fnamemodify(path, ':h').'/src/'.fname
+    let fname = fnamemodify(path, ':t:r')..'.dot'
+    let path = fnamemodify(path, ':h')..'/src/'..fname
     let path = substitute(path, '^\s*\.', expand('%:p:h'), '')
 
     "                ┌ in case the path contains an environment variable
     "                │
     if !filereadable(expand(path)) | return | endif
 
-    sp | exe 'e '.path
+    sp | exe 'e '..path
     nno <buffer><expr><nowait><silent> q reg_recording() isnot# '' ? 'q' : ':<c-u>q<cr>'
     au BufWritePost <buffer> ++once Graph -compile
 endfu
@@ -1279,7 +1279,7 @@ fu s:interactive() abort "{{{1
 endfu
 
 fu s:output_file() abort "{{{1
-    return expand('%:p:h:h').'/'.expand('%:t:r').'.'.s:FORMAT
+    return expand('%:p:h:h')..'/'..expand('%:t:r')..'.'..s:FORMAT
 endfu
 
 fu s:show(cmd,line1,line2) abort "{{{1
