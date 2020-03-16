@@ -1146,7 +1146,7 @@ fu s:compile(cmd, line1, line2) abort "{{{1
         try
             throw 'E8010: [graph]  filter not available: '..a:cmd
         catch
-            call lg#catch_error()
+            call lg#catch()
             return 'fail'
         endtry
     endif
@@ -1163,7 +1163,7 @@ fu s:compile(cmd, line1, line2) abort "{{{1
     "     try
     "         throw 'E8011: [graph]  output file not writable '.s:output_file()
     "     catch
-    "         call lg#catch_error()
+    "         call lg#catch()
     "         return 'fail'
     "     endtry
     " endif
@@ -1270,7 +1270,7 @@ fu s:interactive() abort "{{{1
         try
             throw 'E8010: [graph]  filter not available: dot'
         catch
-            call lg#catch_error()
+            call lg#catch()
             return
         endtry
     endif
