@@ -1,7 +1,7 @@
 " Commands {{{1
 
 com -bar -buffer -range=% -nargs=+  -complete=custom,graph#cmd_complete Graph
-\     call graph#cmd(<q-args>, <line1>, <line2>)
+    \ call graph#cmd(<q-args>, <line1>, <line2>)
 
 " Mappings {{{1
 
@@ -30,5 +30,5 @@ compiler dot
 " Teardown {{{1
 
 let b:undo_ftplugin = get(b:, 'undo_ftplugin', 'exe')
-    \ ..'| call graph#undo_ftplugin()'
+    \ .. '| call graph#undo_ftplugin()'
 
