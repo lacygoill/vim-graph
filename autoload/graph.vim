@@ -1060,7 +1060,7 @@ fu graph#omni_complete(findstart, base) abort "{{{1
             while labelpos > 0 && line[labelpos - 1] =~ '[a-z]'
                 let labelpos -= 1
             endwhile
-            let labelstr=strpart(line, labelpos, withspacepos - 1 - labelpos)
+            let labelstr = line[labelpos : withspacepos - 2]
 
             let s:completion_type = labelstr is# 'shape'
                 \ ?     'SHAPE'
@@ -1290,8 +1290,7 @@ fu s:show(cmd,line1,line2) abort "{{{1
 endfu
 
 fu graph#undo_ftplugin() abort "{{{1
-    setl cms< ofu<
-    set efm< mp<
+    set cms< efm< mp< ofu<
     unlet! b:mc_chain
 
     nunmap <buffer> <bar>c
