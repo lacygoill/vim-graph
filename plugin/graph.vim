@@ -3,5 +3,5 @@ if exists('g:loaded_graph')
 endif
 let g:loaded_graph = 1
 
-nno <silent><unique> ge :<c-u>call graph#edit_diagram()<cr>
-xno <silent><unique> ge :<c-u>call graph#create_diagram()<cr>
+nno <unique> ge <cmd>call graph#edit_diagram()<cr>
+xno <unique> ge <c-\><c-n><cmd>call graph#create_diagram()<cr>

@@ -5,13 +5,13 @@ com -bar -buffer -range=% -nargs=+  -complete=custom,graph#cmd_complete Graph
 
 " Mappings {{{1
 
-nno <buffer><nowait><silent> <bar>c :<c-u>Graph -compile<cr>
-xno <buffer><nowait><silent> <bar>c :Graph -compile<cr>
+nno <buffer><nowait> <bar>c <cmd>Graph -compile<cr>
+xno <buffer><nowait> <bar>c <c-\><c-n><cmd>*Graph -compile<cr>
 
-nno <buffer><nowait><silent> <bar>i :<c-u>Graph -interactive<cr>
+nno <buffer><nowait> <bar>i <cmd>Graph -interactive<cr>
 
-nno <buffer><nowait><silent> <bar>s :<c-u>Graph -show<cr>
-xno <buffer><nowait><silent> <bar>s :Graph -show<cr>
+nno <buffer><nowait> <bar>s <cmd>Graph -show<cr>
+xno <buffer><nowait> <bar>s <c-\><c-n><cmd>*Graph -show<cr>
 
 " Options {{{1
 
