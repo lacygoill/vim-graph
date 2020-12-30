@@ -1096,7 +1096,7 @@ fu graph#omni_complete(findstart, base) abort "{{{1
 
         elseif line[withspacepos - 1] =~ ',\|\['
             " attr
-            let attrstr=line[0:withspacepos - 1]
+            let attrstr=line[0 : withspacepos - 1]
             " skip spaces
             while line[withspacepos] =~ '\s'
                 let withspacepos += 1
