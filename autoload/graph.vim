@@ -1248,7 +1248,9 @@ fu graph#edit_diagram() abort "{{{1
 
     "   ┌ in case the path contains an environment variable
     "   │
-    if !expand(path)->filereadable() | return | endif
+    if !expand(path)->filereadable()
+        return
+    endif
 
     sp | exe 'e ' .. path
     nno <buffer><expr><nowait> q reg_recording() != '' ? 'q' : '<cmd>q<cr>'
