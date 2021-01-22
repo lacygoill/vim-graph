@@ -661,7 +661,7 @@ let s:COLOR = [
     \ #{word: 'mistyrose1'},
     \ #{word: 'mistyrose2'},
     \ #{word: 'mistyrose3'},
-    \ ##{word: mistyrose4},
+    \ #{word: mistyrose4},
     \ #{word: 'moccasin'},
     \ #{word: 'navajowhite'},
     \ #{word: 'navajowhite1'},
