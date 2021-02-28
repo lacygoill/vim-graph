@@ -1,7 +1,7 @@
 if exists('g:autoloaded_graph')
     finish
 endif
-let g:autoloaded_graph = 1
+let g:autoloaded_graph = v:true
 
 " FIXME:
 " There are 2 new kinds of attributes (S and C).
