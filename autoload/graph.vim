@@ -1201,9 +1201,9 @@ fu graph#create_diagram() abort "{{{1
     let fname = getline('.')->matchstr(pat)->substitute('\s\+', '_', 'g')
 
     " prepend the selection with an open square bracket
-    let line =substitute(line, '.*\%' .. col1 .. 'c\zs', '[', '')
+    let line = line->substitute('.*\%' .. col1 .. 'c\zs', '[', '')
     " prefix it with a closing square bracket
-    let line = substitute(line, '.*\%' .. col2 .. 'c..\zs', ']', '')
+    let line = line->substitute('.*\%' .. col2 .. 'c..\zs', ']', '')
     "                                               ││
     "                                               │└ to take into account the open square bracket
     "                                               │  we've just inserted
@@ -1217,9 +1217,9 @@ fu graph#create_diagram() abort "{{{1
     let path_to_dot = path_to_wiki .. '/src/' .. fname .. '.dot'
 
     let path_to_pdf = path_to_wiki .. '/' .. fname .. '.pdf'
-    let path_to_pdf = substitute(path_to_pdf, '\V' .. $MY_WIKI, '$MY_WIKI', '')
+    let path_to_pdf = path_to_pdf->substitute('\V' .. $MY_WIKI, '$MY_WIKI', '')
     " append `(path_to_file.pdf)`
-    let line = substitute(line, '.*\%' .. col2 .. 'c...\zs', '(' .. path_to_pdf .. ')', '')
+    let line = line->substitute('.*\%' .. col2 .. 'c...\zs', '(' .. path_to_pdf .. ')', '')
     " \                     '(' .. fnamemodify(path, ':h')->substitute('\V' .. $MY_WIKI, '$MY_WIKI', '') .. '.pdf)',
     call setline(lnum, line)
 
@@ -1244,7 +1244,7 @@ fu graph#edit_diagram() abort "{{{1
     let path = matchstr(path, '\[.\{-}\](\zs.\{-}\ze)')
     let fname = fnamemodify(path, ':t:r') .. '.dot'
     let path = fnamemodify(path, ':h') .. '/src/' .. fname
-    let path = substitute(path, '^\s*\.', expand('%:p:h'), '')
+    let path = path->substitute('^\s*\.', expand('%:p:h'), '')
 
     "   ┌ in case the path contains an environment variable
     "   │
