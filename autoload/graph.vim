@@ -661,7 +661,7 @@ let s:COLOR = [
     \ #{word: 'mistyrose1'},
     \ #{word: 'mistyrose2'},
     \ #{word: 'mistyrose3'},
-    \ #{word: mistyrose4},
+    \ #{word: 'mistyrose4'},
     \ #{word: 'moccasin'},
     \ #{word: 'navajowhite'},
     \ #{word: 'navajowhite1'},
@@ -1197,8 +1197,7 @@ fu graph#create_diagram() abort "{{{1
     let lnum = line('.')
     let line = getline('.')
 
-    let pat = '.*\%' .. col1 .. 'c\zs.*\%' .. col2 .. 'c.\ze.*'
-    let fname = getline('.')->matchstr(pat)->substitute('\s\+', '_', 'g')
+    let fname = getline('.')->strpart(col1 - 1, col2 - col1 + 1)
 
     " prepend the selection with an open square bracket
     let line = line->substitute('.*\%' .. col1 .. 'c\zs', '[', '')
